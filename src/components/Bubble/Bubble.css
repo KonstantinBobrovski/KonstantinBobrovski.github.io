@@ -1,0 +1,8 @@
+.bubble {
+    background-color: var(--color);
+    aspect-ratio: 1 / 1;
+    width: var(--size, 40px);
+    border-radius: 50%;
+    mix-blend-mode: difference;
+    position: absolute;
+}

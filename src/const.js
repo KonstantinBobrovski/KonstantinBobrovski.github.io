@@ -1,0 +1,1 @@
+export const Header = "Аз мога тук и сега";
