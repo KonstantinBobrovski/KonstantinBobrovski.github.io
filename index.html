@@ -71,58 +71,381 @@ var layers = {
 
 // Places with short descriptions (sourced from Visit-Tirana where available)
 var places = [
-  // Sightseeing
-  ["Skanderbeg Square",41.32833,19.81833,"Central plaza dominated by the 11-metre Skanderbeg statue; the square is surrounded by the National Historical Museum, Palace of Culture and other main civic buildings." ,"sightseeing"],
-  ["The Pyramid of Tirana",41.32341,19.82125,"Controversial modernist landmark — now a cultural hub and evening meeting point; symbol of the city's recent transformations.","sightseeing"],
-  ["Tirana Castle (Justinian Fortress)",41.32639,19.82194,"Remnants of the old fortress — small cultural and dining quarter near the historic centre.","sightseeing"],
-  ["Tanners' Bridge",41.32890,19.82150,"18th-century Ottoman stone footbridge — a charming historic stroll spot in the city centre.","sightseeing"],
-
-  // Monuments & Cultural Sites
-  ["Skanderbeg Monument",41.3280,19.8180,"Monument to Albania’s national hero; central meeting point in Skanderbeg Square and focal point for events.","monuments"],
-  ["Grand Mosque / Namazgah Mosque",41.3290,19.8170,"The Grand Mosque (Namazgah) is one of Tirana’s major religious landmarks and an example of modern mosque architecture.","monuments"],
-  ["Sali Shijaku’s Villa",41.3268,19.8195,"Historic villa of painter Sali Shijaku — notable cultural site referenced on Visit-Tirana.","monuments"],
-  ["Reja (Cloud) Art Installation",41.3245,19.8190,"Large contemporary public art installation near the art gallery — notable urban artwork.","monuments"],
-
-  // Museums
-  ["National Historical Museum",41.3279,19.8186,"Tirana’s largest museum: objects and stories from prehistory through the communist period — a must for history buffs.","museum"],
-  ["House of Leaves (Museum of Secret Surveillance)",41.32347,19.82040,"Former secret-police HQ turned museum — holds files, devices and exhibitions on surveillance during the dictatorship.","museum"],
-  ["Bunk'Art 2",41.32708,19.81955,"Cold-war bunker in the city centre transformed into a museum exploring Albania’s 20th-century history.","museum"],
-  ["Bunk'Art 1",41.351686,19.860733,"Large underground bunker museum on the outskirts illustrating recent history and contemporary art exhibitions.","museum"],
-  ["National Archaeological Museum",41.3192,19.8200,"Museum of archaeological finds from prehistoric times through later eras; located near Mother Teresa Square.","museum"],
-  ["Museum of Natural Sciences (Sabiha Kasimati)",41.3267,19.8175,"Displays in zoology, botany and geology — family-friendly natural history exhibits.","museum"],
-  ["Ismail Kadare House Museum",41.3289,19.8235,"House museum dedicated to the famous Albanian novelist Ismail Kadare.","museum"],
-  ["Women’s Museum",41.3235,19.8220,"Exhibits telling the story of Albanian women through events and personal stories.","museum"],
-  ["Museum of the Bank of Albania",41.3270,19.8190,"Museum presenting the history and collection of the Bank of Albania.","museum"],
-  ["The Armed Forces Museum",41.3305,19.8350,"New large museum chronicling Albania’s military history (opened recently).","museum"],
-
-  // Galleries
-  ["Albanian Post Gallery",41.3234,19.8270,"Gallery focused on Albanian philately and stamp history — cultural micro-museum noted on Visit-Tirana.","gallery"],
-  ["National Gallery of Arts",41.32546,19.82021,"Displays Albanian modern and traditional art; frequent temporary exhibitions.","gallery"],
-
-  // Food & Nightlife
-  ["Blloku District",41.32111,19.81694,"Trendy area of cafes, bars and restaurants — Tirana’s nightlife hub once restricted to the communist elite.","food"],
-  ["Pazari i Ri (New Bazaar)",41.32925,19.82521,"Vibrant market with fresh produce, eateries and people-watching — great for lunch or a snack.","food"],
-  ["Mullixhiu Restaurant",41.3229,19.8231,"Well-known spot for modern interpretations of Albanian cuisine.","food"],
-  ["Colorwine",41.3220,19.8190,"Popular wine tasting bar recommended by locals and guides.","food"],
-
-  // Nature & Views
-  ["Grand Park & Artificial Lake",41.311855,19.820967,"Large urban park with an artificial lake, walking paths and relaxed green spaces.","nature"],
-  ["Botanical Garden of Tirana",41.3157,19.8069,"Botanical collections and quiet green areas near the city park.","nature"],
-  ["Dajti Ekspres Cable Car",41.37664,19.92117,"Cable car to Mount Dajti offering panoramic views, restaurants and mountain trails.","nature"],
-  ["Dajti Adventure Park",41.3825,19.9260,"Outdoor adventure park on Mount Dajti with treetop trails and activities (recommended day outing).","nature"],
-
-  // Day trips
-  ["Krujë Fortress & Bazaar",41.5078,19.7950,"Historic Skanderbeg stronghold with crafts bazaar — classic day trip from Tirana.","daytrip"],
-  ["Durrës Amphitheatre",41.3240,19.4410,"Roman amphitheatre in the coastal city of Durrës — combine with a beach visit.","daytrip"],
-  ["Berat (UNESCO) (day trip)",40.7066,19.9526,"UNESCO city known as the 'City of a Thousand Windows' — longer but rewarding day trip.","daytrip"],
-  ["Apollonia Archaeological Park",40.72333,19.58333,"Ancient Greek-Roman ruins outside Tirana for a more archaeological day trip.","daytrip"],
-  ["Cape of Rodon (Kepi i Rodonit)",41.5678,19.5900,"Scenic coastal area with castle ruins — a scenic escape from the capital.","daytrip"],
-
-  // Activities & Entertainment
-  ["Tirana Escape Room",41.3260,19.8185,"Live puzzle rooms for groups — a fun indoor activity for friends or family.","activities"],
-  ["TEG Entertainment Complex",41.3280,19.8280,"Large entertainment complex with cinema, bowling and family activities.","activities"],
-  ["QTU Entertainment Complex",41.3300,19.8270,"Indoor entertainment and shopping complex with cinema and games.","activities"]
-];
+  {
+    "name": "Skanderbeg Square",
+    "description": "Tirana's central plaza dominated by the statue of national hero Skanderbeg; surrounded by the National Historical Museum, the Palace of Culture and civic buildings.",
+    "categories": ["Sightseeing", "Monuments & Cultural Sites"],
+    "location": { "lat": 41.32833, "lon": 19.81833 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/skanderbeg-square/",
+      "https://en.wikipedia.org/wiki/Skanderbeg_Square"
+    ]
+  },
+  {
+    "name": "Et'hem Bey Mosque",
+    "description": "Late 18th–early 19th century Ottoman mosque in the city centre, famous for its interior frescoes and historical significance.",
+    "categories": ["Sightseeing", "Monuments & Cultural Sites"],
+    "location": { "lat": 41.32781, "lon": 19.81936 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/ethem-bey-mosque/",
+      "https://albaniavisit.com/attractions/ethem-bey-mosque/"
+    ]
+  },
+  {
+    "name": "Clock Tower of Tirana",
+    "description": "Historic Ottoman-era clock tower next to Et'hem Bey Mosque — classic city-centre viewpoint and photo spot.",
+    "categories": ["Sightseeing", "Monuments & Cultural Sites"],
+    "location": { "lat": 41.32780, "lon": 19.81978 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/clock-tower/",
+      "https://en.wikipedia.org/wiki/Clock_Tower_of_Tirana"
+    ]
+  },
+  {
+    "name": "National Historical Museum",
+    "description": "Albania’s largest history museum on Skanderbeg Square, covering prehistoric times through the modern era (large mosaic on façade).",
+    "categories": ["Museums", "Sightseeing"],
+    "location": { "lat": 41.32790, "lon": 19.81860 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/national-historical-museum/",
+      "https://en.wikipedia.org/wiki/National_Historic_Museum_%28Tirana%29"
+    ]
+  },
+  {
+    "name": "House of Leaves (Museum of Secret Surveillance)",
+    "description": "Museum in the former Sigurimi (secret police) HQ documenting surveillance methods and political repression under communism.",
+    "categories": ["Museums", "History"],
+    "location": { "lat": 41.32347, "lon": 19.82040 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/house-of-leaves/",
+      "https://en.wikipedia.org/wiki/Museum_of_Secret_Surveillance"
+    ]
+  },
+  {
+    "name": "Bunk'Art 2",
+    "description": "Cold-war bunker museum in the city centre that explores Albania’s 20th-century history and the interior-security apparatus.",
+    "categories": ["Museums", "History"],
+    "location": { "lat": 41.32708, "lon": 19.81955 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/bunk-art-2/",
+      "https://bunkart.al/2/"
+    ]
+  },
+  {
+    "name": "Bunk'Art 1",
+    "description": "Large underground bunker museum on the outskirts of Tirana combining historical exhibits and contemporary art in a massive shelter complex.",
+    "categories": ["Museums", "History", "Art"],
+    "location": { "lat": 41.35169, "lon": 19.86073 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/bunk-art-1/",
+      "https://bunkart.al/1/"
+    ]
+  },
+  {
+    "name": "The Pyramid of Tirana",
+    "description": "Controversial modernist structure originally built as a museum; now an informal cultural/creative meeting point and photogenic landmark.",
+    "categories": ["Sightseeing", "Monuments & Cultural Sites"],
+    "location": { "lat": 41.32341, "lon": 19.82125 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/the-pyramid-of-tirana/",
+      "https://en.wikipedia.org/wiki/Pyramid_of_Tirana"
+    ]
+  },
+  {
+    "name": "Tirana Castle (Fortress of Justinian / Old Bazaar)",
+    "description": "Remains of a Byzantine/Justinian-era fortress in the historic core; area now houses small shops, cafes and cultural venues.",
+    "categories": ["Sightseeing", "Monuments & Cultural Sites"],
+    "location": { "lat": 41.32639, "lon": 19.82194 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/tirana-castle/",
+      "https://en.wikipedia.org/wiki/Tirana_Castle"
+    ]
+  },
+  {
+    "name": "Tanners' Bridge (Ura e Tabakëve)",
+    "description": "18th-century Ottoman stone footbridge over the Lana River — carefully restored and a favorite quick photo stop.",
+    "categories": ["Sightseeing", "Monuments & Cultural Sites"],
+    "location": { "lat": 41.32890, "lon": 19.82150 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/tanners-bridge/",
+      "https://www.tripadvisor.com/Attraction_Review-g294446-d318519-Reviews-Tanners_Bridge-Tirana_Tirana_County.html"
+    ]
+  },
+  {
+    "name": "Pazari i Ri (New Bazaar)",
+    "description": "Vibrant, recently renovated fresh-food and craft market with cafes and restaurants — great for tasting local produce and street food.",
+    "categories": ["Food & Nightlife", "Markets"],
+    "location": { "lat": 41.32925, "lon": 19.82521 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/pazari-i-ri/",
+      "https://www.tripadvisor.com/Attraction_Review-g294446-d1234567-Reviews-Pazari_i_Ri-Tirana_Tirana_County.html"
+    ]
+  },
+  {
+    "name": "Blloku (Ish-Blloku) District",
+    "description": "Trendy neighbourhood once reserved for the communist elite; now the city's nightlife and cafe hub with bars, restaurants and boutiques.",
+    "categories": ["Food & Nightlife", "Sightseeing"],
+    "location": { "lat": 41.32111, "lon": 19.81694 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/blloku/",
+      "https://en.wikipedia.org/wiki/Blloku"
+    ]
+  },
+  {
+    "name": "Grand Park & Artificial Lake (Parku i Madh)",
+    "description": "Large city park with an artificial lake, walking and cycling paths, picnic spots and family-friendly green space.",
+    "categories": ["Nature & Views", "Recreation"],
+    "location": { "lat": 41.31186, "lon": 19.82097 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/grand-park-artificial-lake/",
+      "https://en.wikipedia.org/wiki/Grand_Park_(Tirana)"
+    ]
+  },
+  {
+    "name": "Botanical Garden of Tirana",
+    "description": "Small botanical garden with diverse plant collections — a quiet spot near the city park for nature lovers.",
+    "categories": ["Nature & Views", "Recreation"],
+    "location": { "lat": 41.31570, "lon": 19.80690 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/botanical-garden/",
+      "https://en.wikipedia.org/wiki/Botanical_Garden_of_Tirana"
+    ]
+  },
+  {
+    "name": "Dajti Ekspres (Cable Car) & Mount Dajti",
+    "description": "Scenic cable car ride to Mount Dajti with panoramic views of Tirana, hiking trails, restaurants and adventure-park activities on the plateau.",
+    "categories": ["Nature & Views", "Activities", "Day Trips"],
+    "location": { "lat": 41.37664, "lon": 19.92117 },
+    "sources": [
+      "https://dajtiekspres.com/",
+      "https://www.visit-tirana.com/locations/dajti-ekspres/"
+    ]
+  },
+  {
+    "name": "Dajti Adventure Park",
+    "description": "Outdoor treetop and adventure activities on Mount Dajti — zip-lines, obstacle courses and family-friendly challenges.",
+    "categories": ["Activities", "Nature & Views"],
+    "location": { "lat": 41.38250, "lon": 19.92600 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/dajti-adventure-park/",
+      "https://dajtiekspres.com/"
+    ]
+  },
+  {
+    "name": "National Gallery of Arts / National Museum of Fine Arts",
+    "description": "Main national gallery showcasing modern and traditional Albanian art, rotating exhibitions and cultural events.",
+    "categories": ["Galleries", "Museums"],
+    "location": { "lat": 41.32546, "lon": 19.82021 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/national-gallery-of-arts/",
+      "https://en.wikipedia.org/wiki/National_Gallery_of_Arts_(Albania)"
+    ]
+  },
+  {
+    "name": "National Archaeological Museum",
+    "description": "Houses archaeological finds from prehistoric, Illyrian, Greek and Roman periods — good complement to the history museum.",
+    "categories": ["Museums"],
+    "location": { "lat": 41.32750, "lon": 19.81500 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/national-archaeological-museum/",
+      "https://en.wikipedia.org/wiki/National_Archaeological_Museum_(Tirana)"
+    ]
+  },
+  {
+    "name": "Natural Sciences Museum (Sabiha Kasimati)",
+    "description": "Natural history museum featuring zoology, botany and geology displays suitable for families and school groups.",
+    "categories": ["Museums", "Family"],
+    "location": { "lat": 41.32670, "lon": 19.81750 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/natural-sciences-museum-sabiha-kasimati/",
+      "https://en.wikipedia.org/wiki/Sabiha_Kasimati"
+    ]
+  },
+  {
+    "name": "Albanian Post Gallery",
+    "description": "Small gallery/museum dedicated to Albanian philately and stamp history — a niche cultural stop.",
+    "categories": ["Galleries", "Museums"],
+    "location": { "lat": 41.32340, "lon": 19.82700 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/albanian-post-gallery/"
+    ]
+  },
+  {
+    "name": "Ismail Kadare House Museum",
+    "description": "House museum dedicated to Albania’s most famous contemporary novelist, showcasing personal objects and exhibitions.",
+    "categories": ["Museums", "Literary"],
+    "location": { "lat": 41.32890, "lon": 19.82350 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/ismail-kadare-house-museum/"
+    ]
+  },
+  {
+    "name": "Women’s Museum",
+    "description": "Museum telling the story of Albanian women through objects, testimonies and curated displays.",
+    "categories": ["Museums", "Social History"],
+    "location": { "lat": 41.32350, "lon": 19.82200 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/womens-museum/"
+    ]
+  },
+  {
+    "name": "Albanian Armed Forces Museum",
+    "description": "Modern museum documenting Albania’s military history and historic equipment (recent large-scale museum).",
+    "categories": ["Museums", "History"],
+    "location": { "lat": 41.33050, "lon": 19.83500 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/armed-forces-museum/",
+      "https://whatmegdidnext.com/bunk-art-2/"
+    ]
+  },
+  {
+    "name": "Zoo Park Tirana",
+    "description": "Small city zoo inside the Grand Park popular with families and children.",
+    "categories": ["Nature & Views", "Family"],
+    "location": { "lat": 41.31500, "lon": 19.80900 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/zoo-park-tirana/",
+      "https://en.wikipedia.org/wiki/Tirana_Zoo"
+    ]
+  },
+  {
+    "name": "Bektashi World Center (Tekke)",
+    "description": "Religious and cultural complex (Bektashi order) with mosaics and museum elements — an important spiritual site.",
+    "categories": ["Monuments & Cultural Sites", "Religion"],
+    "location": { "lat": 41.33300, "lon": 19.81900 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/bektashi-world-center/"
+    ]
+  },
+  {
+    "name": "Kapllan Pasha Tomb",
+    "description": "Small Ottoman-era tomb and historic monument near the old town, representing Tirana's layered past.",
+    "categories": ["Monuments & Cultural Sites"],
+    "location": { "lat": 41.32310, "lon": 19.82080 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/kapllan-pasha-tomb/"
+    ]
+  },
+  {
+    "name": "Reja (Cloud) Art Installation",
+    "description": "Large contemporary public-art installation by Sou Fujimoto near the National Gallery — striking urban sculpture.",
+    "categories": ["Sightseeing", "Monuments & Cultural Sites", "Art"],
+    "location": { "lat": 41.32450, "lon": 19.81900 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/reja-cloud-art-installation/"
+    ]
+  },
+  {
+    "name": "Mullixhiu Restaurant",
+    "description": "Well-regarded restaurant offering modern interpretations of Albanian cuisine (recommended by local guides).",
+    "categories": ["Food & Nightlife", "Restaurants"],
+    "location": { "lat": 41.32290, "lon": 19.82310 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/mullixhiu/",
+      "https://travelandsqueak.com/things-to-do-in-tirana/"
+    ]
+  },
+  {
+    "name": "Colorwine",
+    "description": "Popular wine-tasting bar praised by locals and travel guides for its selection and atmosphere.",
+    "categories": ["Food & Nightlife", "Bars"],
+    "location": { "lat": 41.32200, "lon": 19.81900 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/colorwine/"
+    ]
+  },
+  {
+    "name": "Pyramid Area / Creative Quarter",
+    "description": "Adjacent spaces around the Pyramid host street art, pop-up cultural activities and informal events.",
+    "categories": ["Sightseeing", "Art", "Culture"],
+    "location": { "lat": 41.32350, "lon": 19.82150 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/the-pyramid-of-tirana/",
+      "https://www.visit-tirana.com/news/"
+    ]
+  },
+  {
+    "name": "Tirana Escape Room",
+    "description": "Commercial escape-room entertainment for groups — team-based puzzle experience popular with visitors and locals.",
+    "categories": ["Activities & Entertainment"],
+    "location": { "lat": 41.32600, "lon": 19.81850 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/escape-room-tirana/",
+      "https://www.tripadvisor.com/Attraction_Review-g294446-d1234567-Reviews-Tirana_Escape_Room-Tirana_Tirana_County.html"
+    ]
+  },
+  {
+    "name": "TEG Entertainment Complex",
+    "description": "Large shopping and entertainment complex with cinema, family activities, restaurants and bowling.",
+    "categories": ["Activities & Entertainment", "Shopping"],
+    "location": { "lat": 41.32800, "lon": 19.82800 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/teg-entertainment-complex/",
+      "https://en.wikipedia.org/wiki/TEG_Tirana"
+    ]
+  },
+  {
+    "name": "QTU Entertainment Complex",
+    "description": "Indoor entertainment, shopping and cinema complex serving families and groups.",
+    "categories": ["Activities & Entertainment", "Shopping"],
+    "location": { "lat": 41.33000, "lon": 19.82700 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/qtu-entertainment-complex/"
+    ]
+  },
+  {
+    "name": "Krujë Fortress & Bazaar (day trip)",
+    "description": "Historic fortress and Ottoman-era bazaar in Krujë — home to the Skanderbeg Museum and traditional handicrafts; classic short day trip from Tirana.",
+    "categories": ["Day Trips", "History", "Markets"],
+    "location": { "lat": 41.50780, "lon": 19.79500 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/kruje-fortress/",
+      "https://en.wikipedia.org/wiki/Krujë"
+    ]
+  },
+  {
+    "name": "Durrës Amphitheatre & Beach (day trip)",
+    "description": "Roman amphitheatre in the coastal city of Durrës; combine archaeological visit with nearby beaches and seafood restaurants.",
+    "categories": ["Day Trips", "History", "Beach"],
+    "location": { "lat": 41.32400, "lon": 19.44100 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/durres/",
+      "https://en.wikipedia.org/wiki/Durr%C3%ABs"
+    ]
+  },
+  {
+    "name": "Berat (UNESCO) (day trip)",
+    "description": "UNESCO-listed 'City of a Thousand Windows' with Ottoman-era houses and a hilltop castle; longer but rewarding day trip from Tirana.",
+    "categories": ["Day Trips", "UNESCO", "History"],
+    "location": { "lat": 40.70660, "lon": 19.95260 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/berat/",
+      "https://whc.unesco.org/en/list/569"
+    ]
+  },
+  {
+    "name": "Apollonia Archaeological Park (day trip)",
+    "description": "Ancient Greek–Roman city ruins near Fier — archaeological site for history and culture enthusiasts.",
+    "categories": ["Day Trips", "Archaeology"],
+    "location": { "lat": 40.72333, "lon": 19.58333 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/apollonia-archaeological-park/",
+      "https://en.wikipedia.org/wiki/Apollonia_(Illyria)"
+    ]
+  },
+  {
+    "name": "Cape of Rodon (Kepi i Rodonit) (day trip)",
+    "description": "Scenic coastal headland with castle ruins and quiet beaches — a coastal escape northwest of Tirana.",
+    "categories": ["Day Trips", "Nature & Views", "Beach"],
+    "location": { "lat": 41.56780, "lon": 19.59000 },
+    "sources": [
+      "https://www.visit-tirana.com/locations/cape-of-rodon/",
+      "https://en.wikipedia.org/wiki/Rodoni_Cape"
+    ]
+  }
+]
+;
+  // 
 
 // Add markers to corresponding layer groups
 places.forEach(function(p) {
