@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta charset="utf-8" />
-<title>Tirana Map – Categorized Attractions</title>
+<title>Tirana — Extended Map (Visit-Tirana descriptions)</title>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
 <style>
@@ -18,12 +18,14 @@
     cursor: pointer;
     z-index: 1000;
   }
+  .legend-note { position: absolute; left: 10px; bottom: 10px; background: rgba(255,255,255,0.9); padding:8px; border-radius:6px; font-size:13px; z-index:1000; }
 </style>
 </head>
 <body>
 
 <div id="map"></div>
 <button class="loc-button" onclick="locateUser()">📍 My Location</button>
+<div class="legend-note">Markers colored by category. Toggle layers at top-right.</div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
@@ -34,7 +36,7 @@ L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   attribution: '© OpenStreetMap'
 }).addTo(map);
 
-// Marker icons by category
+// Helper to load colored marker icons
 function icon(color) {
   return L.icon({
     iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
@@ -46,105 +48,117 @@ function icon(color) {
 
 var icons = {
   sightseeing: icon("red"),
+  monuments: icon("orange"),
   museum: icon("violet"),
+  gallery: icon("purple"),
   food: icon("green"),
   nature: icon("blue"),
-  daytrip: icon("orange"),
-  activities: icon("yellow")
+  daytrip: icon("yellow"),
+  activities: icon("grey")
 };
 
-// Layers
+// Create layer groups (toggleable)
 var layers = {
   "🏛 Sightseeing": L.layerGroup(),
+  "📜 Monuments & Cultural Sites": L.layerGroup(),
   "🖼 Museums": L.layerGroup(),
+  "🖼 Galleries": L.layerGroup(),
   "🍽 Food & Nightlife": L.layerGroup(),
   "🌿 Nature & Views": L.layerGroup(),
   "🚗 Day Trips": L.layerGroup(),
   "🎲 Activities & Entertainment": L.layerGroup()
 };
 
-// Locations
+// Places with short descriptions (sourced from Visit-Tirana where available)
 var places = [
   // Sightseeing
-  ["Skanderbeg Square",41.32833,19.81833,"Main city square","sightseeing"],
-  ["Et'hem Bey Mosque",41.32781,19.81936,"Historic mosque","sightseeing"],
-  ["Clock Tower",41.32780,19.81978,"Ottoman clock tower","sightseeing"],
-  ["Pyramid of Tirana",41.32341,19.82125,"Iconic structure","sightseeing"],
-  ["Tirana Castle",41.32639,19.82194,"Old fortress walls","sightseeing"],
-  ["Resurrection Cathedral",41.32633,19.81709,"Orthodox cathedral","sightseeing"],
-  ["Tanners' Bridge",41.3289,19.8215,"Ottoman bridge","sightseeing"],
-  ["Sheshi Nënë Tereza",41.3192,19.8200,"Mother Teresa Square","sightseeing"],
-  ["Reja Art Installation",41.3245,19.8190,"Modern public art","sightseeing"],
+  ["Skanderbeg Square",41.32833,19.81833,"Central plaza dominated by the 11-metre Skanderbeg statue; the square is surrounded by the National Historical Museum, Palace of Culture and other main civic buildings." ,"sightseeing"],
+  ["The Pyramid of Tirana",41.32341,19.82125,"Controversial modernist landmark — now a cultural hub and evening meeting point; symbol of the city's recent transformations.","sightseeing"],
+  ["Tirana Castle (Justinian Fortress)",41.32639,19.82194,"Remnants of the old fortress — small cultural and dining quarter near the historic centre.","sightseeing"],
+  ["Tanners' Bridge",41.32890,19.82150,"18th-century Ottoman stone footbridge — a charming historic stroll spot in the city centre.","sightseeing"],
+
+  // Monuments & Cultural Sites
+  ["Skanderbeg Monument",41.3280,19.8180,"Monument to Albania’s national hero; central meeting point in Skanderbeg Square and focal point for events.","monuments"],
+  ["Grand Mosque / Namazgah Mosque",41.3290,19.8170,"The Grand Mosque (Namazgah) is one of Tirana’s major religious landmarks and an example of modern mosque architecture.","monuments"],
+  ["Sali Shijaku’s Villa",41.3268,19.8195,"Historic villa of painter Sali Shijaku — notable cultural site referenced on Visit-Tirana.","monuments"],
+  ["Reja (Cloud) Art Installation",41.3245,19.8190,"Large contemporary public art installation near the art gallery — notable urban artwork.","monuments"],
 
   // Museums
-  ["National Historical Museum",41.3279,19.8186,"History of Albania","museum"],
-  ["Bunk'Art 2",41.32708,19.81955,"Communist bunker museum","museum"],
-  ["Bunk'Art 1",41.351686,19.860733,"Huge bunker complex","museum"],
-  ["House of Leaves",41.32347,19.8204,"Secret police museum","museum"],
-  ["National Art Gallery",41.32546,19.82021,"Albanian art","museum"],
-  ["National Archaeological Museum",41.3275,19.8150,"Ancient artifacts","museum"],
-  ["Natural Sciences Museum",41.3267,19.8175,"Zoology, botany, geology","museum"],
-  ["National Museum of Fine Arts",41.3256,19.8203,"Modern and traditional art","museum"],
+  ["National Historical Museum",41.3279,19.8186,"Tirana’s largest museum: objects and stories from prehistory through the communist period — a must for history buffs.","museum"],
+  ["House of Leaves (Museum of Secret Surveillance)",41.32347,19.82040,"Former secret-police HQ turned museum — holds files, devices and exhibitions on surveillance during the dictatorship.","museum"],
+  ["Bunk'Art 2",41.32708,19.81955,"Cold-war bunker in the city centre transformed into a museum exploring Albania’s 20th-century history.","museum"],
+  ["Bunk'Art 1",41.351686,19.860733,"Large underground bunker museum on the outskirts illustrating recent history and contemporary art exhibitions.","museum"],
+  ["National Archaeological Museum",41.3192,19.8200,"Museum of archaeological finds from prehistoric times through later eras; located near Mother Teresa Square.","museum"],
+  ["Museum of Natural Sciences (Sabiha Kasimati)",41.3267,19.8175,"Displays in zoology, botany and geology — family-friendly natural history exhibits.","museum"],
+  ["Ismail Kadare House Museum",41.3289,19.8235,"House museum dedicated to the famous Albanian novelist Ismail Kadare.","museum"],
+  ["Women’s Museum",41.3235,19.8220,"Exhibits telling the story of Albanian women through events and personal stories.","museum"],
+  ["Museum of the Bank of Albania",41.3270,19.8190,"Museum presenting the history and collection of the Bank of Albania.","museum"],
+  ["The Armed Forces Museum",41.3305,19.8350,"New large museum chronicling Albania’s military history (opened recently).","museum"],
+
+  // Galleries
+  ["Albanian Post Gallery",41.3234,19.8270,"Gallery focused on Albanian philately and stamp history — cultural micro-museum noted on Visit-Tirana.","gallery"],
+  ["National Gallery of Arts",41.32546,19.82021,"Displays Albanian modern and traditional art; frequent temporary exhibitions.","gallery"],
 
   // Food & Nightlife
-  ["Blloku District",41.32111,19.81694,"Bars & nightlife","food"],
-  ["Pazari i Ri",41.32925,19.82521,"Market & restaurants","food"],
-  ["Mullixhiu Restaurant",41.3229,19.8231,"Modern Albanian food","food"],
-  ["Radio Bar",41.3214,19.8179,"Popular cocktail bar","food"],
-  ["Komiteti Bar",41.3223,19.8185,"Traditional raki bar","food"],
-  ["Colorwine",41.3220,19.8190,"Wine tasting bar","food"],
-  ["Tea Room & Creperi",41.3230,19.8180,"Cafes & desserts","food"],
+  ["Blloku District",41.32111,19.81694,"Trendy area of cafes, bars and restaurants — Tirana’s nightlife hub once restricted to the communist elite.","food"],
+  ["Pazari i Ri (New Bazaar)",41.32925,19.82521,"Vibrant market with fresh produce, eateries and people-watching — great for lunch or a snack.","food"],
+  ["Mullixhiu Restaurant",41.3229,19.8231,"Well-known spot for modern interpretations of Albanian cuisine.","food"],
+  ["Colorwine",41.3220,19.8190,"Popular wine tasting bar recommended by locals and guides.","food"],
 
-  // Nature
-  ["Grand Park & Lake",41.311855,19.820967,"Walks & greenery","nature"],
-  ["Botanical Garden",41.3157,19.8069,"Plants & calm","nature"],
-  ["Dajti Ekspres Cable Car",41.37664,19.92117,"Mountain views","nature"],
-  ["Mount Dajti Trails",41.3841,19.9228,"Hiking","nature"],
+  // Nature & Views
+  ["Grand Park & Artificial Lake",41.311855,19.820967,"Large urban park with an artificial lake, walking paths and relaxed green spaces.","nature"],
+  ["Botanical Garden of Tirana",41.3157,19.8069,"Botanical collections and quiet green areas near the city park.","nature"],
+  ["Dajti Ekspres Cable Car",41.37664,19.92117,"Cable car to Mount Dajti offering panoramic views, restaurants and mountain trails.","nature"],
+  ["Dajti Adventure Park",41.3825,19.9260,"Outdoor adventure park on Mount Dajti with treetop trails and activities (recommended day outing).","nature"],
 
   // Day trips
-  ["Krujë Fortress",41.5078,19.795,"Skanderbeg city","daytrip"],
-  ["Durrës Amphitheatre",41.324,19.441,"Roman ruins","daytrip"],
-  ["Durrës Beach",41.316,19.45,"Sea & sunset","daytrip"],
-  ["Berat (UNESCO)",40.7066,19.9526,"Historic city","daytrip"],
-  ["Apollonia Ruins",40.72333,19.58333,"Ancient city","daytrip"],
-  ["Cape of Rodon",41.5678,19.5900,"Scenic coastal area","daytrip"],
+  ["Krujë Fortress & Bazaar",41.5078,19.7950,"Historic Skanderbeg stronghold with crafts bazaar — classic day trip from Tirana.","daytrip"],
+  ["Durrës Amphitheatre",41.3240,19.4410,"Roman amphitheatre in the coastal city of Durrës — combine with a beach visit.","daytrip"],
+  ["Berat (UNESCO) (day trip)",40.7066,19.9526,"UNESCO city known as the 'City of a Thousand Windows' — longer but rewarding day trip.","daytrip"],
+  ["Apollonia Archaeological Park",40.72333,19.58333,"Ancient Greek-Roman ruins outside Tirana for a more archaeological day trip.","daytrip"],
+  ["Cape of Rodon (Kepi i Rodonit)",41.5678,19.5900,"Scenic coastal area with castle ruins — a scenic escape from the capital.","daytrip"],
 
   // Activities & Entertainment
-  ["Tirana Escape Room",41.3260,19.8185,"Live puzzle adventure","activities"],
-  ["TEG Entertainment Complex",41.3280,19.8280,"Cinema, bowling, arcade","activities"],
-  ["QTU Entertainment Complex",41.3300,19.8270,"Indoor games & cinema","activities"]
+  ["Tirana Escape Room",41.3260,19.8185,"Live puzzle rooms for groups — a fun indoor activity for friends or family.","activities"],
+  ["TEG Entertainment Complex",41.3280,19.8280,"Large entertainment complex with cinema, bowling and family activities.","activities"],
+  ["QTU Entertainment Complex",41.3300,19.8270,"Indoor entertainment and shopping complex with cinema and games.","activities"]
 ];
 
-// Add markers
-places.forEach(p => {
-  var marker = L.marker([p[1],p[2]], {icon: icons[p[4]]})
-    .bindPopup(`<b>${p[0]}</b><br>${p[3]}`);
-  layers[
-    p[4]=="sightseeing"?"🏛 Sightseeing":
-    p[4]=="museum"?"🖼 Museums":
-    p[4]=="food"?"🍽 Food & Nightlife":
-    p[4]=="nature"?"🌿 Nature & Views":
-    p[4]=="daytrip"?"🚗 Day Trips":
+// Add markers to corresponding layer groups
+places.forEach(function(p) {
+  var catKey = (
+    p[4]=="sightseeing" ? "🏛 Sightseeing" :
+    p[4]=="monuments" ? "📜 Monuments & Cultural Sites" :
+    p[4]=="museum" ? "🖼 Museums" :
+    p[4]=="gallery" ? "🖼 Galleries" :
+    p[4]=="food" ? "🍽 Food & Nightlife" :
+    p[4]=="nature" ? "🌿 Nature & Views" :
+    p[4]=="daytrip" ? "🚗 Day Trips" :
     "🎲 Activities & Entertainment"
-  ].addLayer(marker);
+  );
+  var markerIcon = icons[p[4]] || icons["sightseeing"];
+  var m = L.marker([p[1], p[2]], {icon: markerIcon})
+    .bindPopup("<b>" + p[0] + "</b><br/>" + p[3]);
+  layers[catKey].addLayer(m);
 });
 
-// Add layers to map
-Object.values(layers).forEach(l => l.addTo(map));
+// Add all layers to the map and a layer control
+Object.values(layers).forEach(function(l){ l.addTo(map); });
 L.control.layers(null, layers).addTo(map);
 
 // Geolocation
 var userMarker;
 function locateUser() {
-  navigator.geolocation.getCurrentPosition(pos => {
-    var lat = pos.coords.latitude;
-    var lon = pos.coords.longitude;
+  if (!navigator.geolocation) { alert("Geolocation not supported by your browser."); return; }
+  navigator.geolocation.getCurrentPosition(function(pos) {
+    var lat = pos.coords.latitude, lon = pos.coords.longitude;
     if (userMarker) map.removeLayer(userMarker);
-    userMarker = L.circleMarker([lat,lon], {
-      radius: 8, color: "#007bff", fillOpacity: 0.8
-    }).addTo(map).bindPopup("You are here").openPopup();
+    userMarker = L.circleMarker([lat,lon], {radius:8, color:"#007bff", fillOpacity:0.8})
+      .addTo(map).bindPopup("You are here").openPopup();
     map.setView([lat,lon],14);
-  }, () => alert("Location access denied"));
+  }, function(err){
+    alert("Unable to retrieve location: " + err.message);
+  }, { enableHighAccuracy: true, timeout: 10000 });
 }
 </script>
 </body>
