@@ -470,7 +470,7 @@ places.forEach(function(p) {
       layers[catKey].addLayer(marker);
     }
   });
-
+});
 // Add all layers to the map and a layer control
 Object.values(layers).forEach(function(l){ l.addTo(map); });
 L.control.layers(null, layers).addTo(map);
