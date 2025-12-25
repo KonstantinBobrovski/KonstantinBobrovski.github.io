@@ -449,21 +449,27 @@ var places = [
 
 // Add markers to corresponding layer groups
 places.forEach(function(p) {
-  var catKey = (
-    p[4]=="sightseeing" ? "🏛 Sightseeing" :
-    p[4]=="monuments" ? "📜 Monuments & Cultural Sites" :
-    p[4]=="museum" ? "🖼 Museums" :
-    p[4]=="gallery" ? "🖼 Galleries" :
-    p[4]=="food" ? "🍽 Food & Nightlife" :
-    p[4]=="nature" ? "🌿 Nature & Views" :
-    p[4]=="daytrip" ? "🚗 Day Trips" :
-    "🎲 Activities & Entertainment"
-  );
-  var markerIcon = icons[p[4]] || icons["sightseeing"];
-  var m = L.marker([p[1], p[2]], {icon: markerIcon})
-    .bindPopup("<b>" + p[0] + "</b><br/>" + p[3]);
-  layers[catKey].addLayer(m);
-});
+  p.categories.forEach(function(category) {
+    var catKey = (
+      category === "Sightseeing" ? "🏛 Sightseeing" :
+      category === "Monuments & Cultural Sites" ? "📜 Monuments & Cultural Sites" :
+      category === "Museums" ? "🖼 Museums" :
+      category === "Galleries" ? "🖼 Galleries" :
+      category === "Food & Nightlife" ? "🍽 Food & Nightlife" :
+      category === "Nature & Views" ? "🌿 Nature & Views" :
+      category === "Day Trips" ? "🚗 Day Trips" :
+      "🎲 Activities & Entertainment"
+    );
+
+    var markerIcon = icons[category.toLowerCase()] || icons["sightseeing"];
+    
+    var marker = L.marker([p.location.lat, p.location.lon], {icon: markerIcon})
+      .bindPopup("<b>" + p.name + "</b><br/>" + p.description);
+
+    if (layers[catKey]) {
+      layers[catKey].addLayer(marker);
+    }
+  });
 
 // Add all layers to the map and a layer control
 Object.values(layers).forEach(function(l){ l.addTo(map); });
