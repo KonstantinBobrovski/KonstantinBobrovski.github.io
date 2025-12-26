@@ -1,1 +1,40 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"/><link rel="icon" href="/favicon.ico"/><meta name="viewport" content="width=device-width,initial-scale=1"/><meta name="theme-color" content="#000000"/><meta name="description" content="Web site created using create-react-app"/><link rel="apple-touch-icon" href="/logo192.png"/><link rel="manifest" href="/manifest.json"/><title>React App</title><script defer="defer" src="/static/js/main.e637dcbb.js"></script><link href="/static/css/main.438425af.css" rel="stylesheet"></head><body><noscript>You need to enable JavaScript to run this app.</noscript><div id="root"></div></body></html>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Map</title>
+<script>
+// Simulated map data and logic
+let mapData = {
+  places: [
+    {
+      name: "Example Place",
+      location: { lat: 41.9981, lon: 21.4254 },
+      description: "A prominent example landmark in Skopje.",
+      categories: ["Historical Sites", "Tourist Attractions"]
+    },
+    // New place added below:
+    {
+      name: "Собор Святого Климента (Saint Clement Cathedral)",
+      location: { lat: 42.00370, lon: 21.41990 },
+      description: "Modern Orthodox cathedral and one of Skopje's most prominent religious landmarks — known for its distinctive dome and colorful frescoes.",
+      categories: ["Religion & Monuments", "Architecture"]
+    }
+  ],
+  categories: {
+    "Historical Sites": "Monuments & Cultural Sites",
+    "Tourist Attractions": "Monuments & Cultural Sites",
+    "Religion & Monuments": "Monuments & Cultural Sites",
+    "Architecture": "Monuments & Cultural Sites"
+  }
+};
+
+// Logic for rendering map and categorizing would go here
+</script>
+</head>
+<body>
+<h1>Map of Skopje</h1>
+<p>Explore the landmarks and attractions!</p>
+</body>
+</html>
