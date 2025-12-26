@@ -2,9 +2,12 @@
 <html>
 <head>
 <meta charset="utf-8" />
-<title>Tirana — Extended Map (Visit-Tirana descriptions)</title>
+<title>Skopje — Extended Map</title>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
+
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+
 <style>
   body { margin:0; padding:0; font-family: Arial, sans-serif; }
   #map { height: 100vh; width: 100%; }
@@ -18,25 +21,37 @@
     cursor: pointer;
     z-index: 1000;
   }
-  .legend-note { position: absolute; left: 10px; bottom: 10px; background: rgba(255,255,255,0.9); padding:8px; border-radius:6px; font-size:13px; z-index:1000; }
+  .legend-note {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    background: rgba(255,255,255,0.9);
+    padding:8px;
+    border-radius:6px;
+    font-size:13px;
+    z-index:1000;
+  }
 </style>
 </head>
 <body>
 
 <div id="map"></div>
 <button class="loc-button" onclick="locateUser()">📍 My Location</button>
-<div class="legend-note">Markers colored by category. Toggle layers at top-right.</div>
+<div class="legend-note">Markers colored by category. Toggle layers top-right.</div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
+
 <script>
-var map = L.map('map').setView([42.00097, 21.43225], 13);
+// MAP
+var map = L.map('map');
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
   maxZoom: 19,
   attribution: '© OpenStreetMap'
 }).addTo(map);
 
-// Helper to load colored marker icons
+// ICONS
 function icon(color) {
   return L.icon({
     iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
@@ -57,311 +72,117 @@ var icons = {
   activities: icon("grey")
 };
 
-// Create layer groups (toggleable)
+// LAYERS (clustered)
 var layers = {
-  "🏛 Sightseeing": L.layerGroup(),
-  "📜 Monuments & Cultural Sites": L.layerGroup(),
-  "🖼 Museums": L.layerGroup(),
-  "🖼 Galleries": L.layerGroup(),
-  "🍽 Food & Nightlife": L.layerGroup(),
-  "🌿 Nature & Views": L.layerGroup(),
-  "🚗 Day Trips": L.layerGroup(),
-  "🎲 Activities & Entertainment": L.layerGroup()
+  "🏛 Sightseeing": L.markerClusterGroup(),
+  "📜 Monuments & Cultural Sites": L.markerClusterGroup(),
+  "🖼 Museums": L.markerClusterGroup(),
+  "🖼 Galleries": L.markerClusterGroup(),
+  "🍽 Food & Nightlife": L.markerClusterGroup(),
+  "🌿 Nature & Views": L.markerClusterGroup(),
+  "🚗 Day Trips": L.markerClusterGroup(),
+  "🎲 Activities & Entertainment": L.markerClusterGroup()
 };
 
-// Places with short descriptions (sourced from Visit-Tirana where available)
+// CATEGORY MAP (single source of truth)
+var CATEGORY_MAP = {
+  "Monuments & Cultural Sites": { layer: "📜 Monuments & Cultural Sites", icon: "monuments" },
+  "Historic Buildings": { layer: "📜 Monuments & Cultural Sites", icon: "monuments" },
+  "Architecture": { layer: "📜 Monuments & Cultural Sites", icon: "monuments" },
+  "Religion": { layer: "📜 Monuments & Cultural Sites", icon: "monuments" },
+  "Religion & Cultural Sites": { layer: "📜 Monuments & Cultural Sites", icon: "monuments" },
+
+  "Museums": { layer: "🖼 Museums", icon: "museum" },
+  "Museums & Galleries": { layer: "🖼 Museums", icon: "museum" },
+  "Galleries": { layer: "🖼 Galleries", icon: "gallery" },
+
+  "Food & Nightlife": { layer: "🍽 Food & Nightlife", icon: "food" },
+
+  "Nature & Outdoors": { layer: "🌿 Nature & Views", icon: "nature" },
+  "Landmarks & Viewpoints": { layer: "🌿 Nature & Views", icon: "nature" },
+
+  "Day Trips": { layer: "🚗 Day Trips", icon: "daytrip" },
+
+  "Activities": { layer: "🎲 Activities & Entertainment", icon: "activities" },
+  "Family Activities": { layer: "🎲 Activities & Entertainment", icon: "activities" }
+};
+
+// DATA (trimmed here only for brevity — keep your full list)
 var places = [
   {
-    "name": "Skopje Fortress (Kale)",
-    "description": "Historic hilltop fortress with panoramic views over the old town and Vardar River — a good photo stop and short walk. Traces from Byzantine to Ottoman eras.",
-    "categories": ["Monuments & Cultural Sites", "Viewpoints"],
-    "location": { "lat": 42.00097, "lon": 21.43225 },
-    "sources": ["https://en.wikipedia.org/wiki/Skopje_Fortress"]
-  },
-  {
-    "name": "Old Bazaar (Stara Čaršija)",
-    "description": "Large historic Ottoman bazaar district with narrow alleys, artisan shops, mosques, cafés and traditional markets — great for exploring and buying souvenirs.",
-    "categories": ["Markets & Shopping", "Cultural Sites"],
-    "location": { "lat": 42.00076, "lon": 21.43696 },
-    "sources": ["https://en.wikipedia.org/wiki/Old_Bazaar%2C_Skopje"]
-  },
-  {
-    "name": "Stone Bridge (Kameni Most)",
-    "description": "15th-century stone bridge crossing the Vardar River that connects Macedonia Square to the Old Bazaar — Skopje's iconic symbol.",
-    "categories": ["Monuments & Cultural Sites", "Architecture"],
-    "location": { "lat": 41.99699, "lon": 21.43307 },
-    "sources": ["https://en.wikipedia.org/wiki/Stone_Bridge_(Skopje)"]
-  },
-  {
-    "name": "Macedonia Square & \"Warrior on a Horse\" (Alexander statue)",
-    "description": "Main central square with fountains and large statues (the towering equestrian 'Warrior on a Horse') — hub for events and a starting point for city walks.",
-    "categories": ["Public Squares & Monuments", "City Life"],
-    "location": { "lat": 41.99590, "lon": 21.43145 },
-    "sources": ["https://en.wikipedia.org/wiki/Macedonia_Square%2C_Skopje", "https://en.wikipedia.org/wiki/Warrior_on_Horseback"]
-  },
-  {
-    "name": "Memorial House of Mother Teresa",
-    "description": "Small museum and memorial dedicated to Mother Teresa (born in Skopje) with exhibits on her life and humanitarian work.",
-    "categories": ["Museums", "Religion & Biography"],
-    "location": { "lat": 41.99389, "lon": 21.43083 },
-    "sources": ["https://en.wikipedia.org/wiki/Memorial_House_of_Mother_Teresa"]
-  },
-  {
-    "name": "Archaeological Museum of North Macedonia",
-    "description": "Large archaeological collection tracing Macedonia's prehistoric, classical and medieval past — useful context before deeper city exploration.",
-    "categories": ["Museums", "History & Archaeology"],
-    "location": { "lat": 41.99684, "lon": 21.43446 },
-    "sources": ["https://www.outdooractive.com/mobile/en/poi/western-balkans/archaeological-museum-of-macedonia/807634059/"]
-  },
-  {
-    "name": "Museum of the City of Skopje (Old Railway Station)",
-    "description": "Museum of local history housed in the partially preserved pre-1963 earthquake railway station — covers Skopje's urban story from ancient to modern times.",
-    "categories": ["Museums", "Local History"],
-    "location": { "lat": 41.99660, "lon": 21.43350 },
-    "sources": ["https://app.ar-tour.com/guides/skopje-guide-in-development/museum-of-the-city-of-skopje.aspx"]
-  },
-  {
-    "name": "Holocaust Memorial Center for the Jews of Macedonia",
-    "description": "Multimedia memorial documenting the history and fate of Macedonia's Jewish community during WWII — important, moving visit.",
-    "categories": ["Museums", "Memorials & History"],
-    "location": { "lat": 41.99856, "lon": 21.43365 },
-    "sources": ["https://en.wikipedia.org/wiki/Holocaust_Memorial_Center_for_the_Jews_of_Macedonia"]
-  },
-  {
-    "name": "Čifte Hammam (National Gallery branch)",
-    "description": "Ottoman-era bathhouse in the Old Bazaar converted into exhibition space and gallery — good for short contemporary/visual art stops.",
-    "categories": ["Museums & Galleries", "Historic Buildings"],
-    "location": { "lat": 42.00111, "lon": 21.43722 },
-    "sources": ["https://nationalgallery.mk/cifte-amammk/"]
-  },
-  {
-    "name": "Mustafa Pasha Mosque",
-    "description": "Elegant 15th-century Ottoman mosque that dominates the Old Bazaar skyline — architectural highlight within the market quarter.",
-    "categories": ["Religion & Monuments", "Architecture"],
-    "location": { "lat": 42.00117, "lon": 21.43458 },
-    "sources": ["https://www.archnet.org/sites/6818"]
-  },
-  {
-    "name": "Porta Macedonia (triumphal arch)",
-    "description": "Modern triumphal arch commissioned as part of Skopje 2014 project — photo stop and landmark on Pella Square.",
-    "categories": ["Monuments & Cultural Sites", "Public Art"],
-    "location": { "lat": 41.99445, "lon": 21.43243 },
-    "sources": ["https://en.wikipedia.org/wiki/Porta_Macedonia"]
-  },
-  {
-    "name": "Skopje Aqueduct (Vizbegovo)",
-    "description": "Rare, well-preserved stone aqueduct northwest of central Skopje — interesting archaeological structure that many visitors miss.",
-    "categories": ["Archaeological Sites", "Monuments"],
-    "location": { "lat": 42.02352, "lon": 21.41873 },
-    "sources": ["https://en.wikipedia.org/wiki/Skopje_Aqueduct"]
-  },
-  {
-    "name": "Matka Canyon & Vrelo Cave",
-    "description": "Dramatic canyon west of Skopje with lake, boat trips to Vrelo cave, kayaking, hiking and multiple small monasteries — top half-day or full-day nature escape.",
-    "categories": ["Nature & Outdoors", "Caves & Boat Trips"],
-    "location": { "lat": 41.93016, "lon": 21.29227 },
-    "sources": ["https://en.wikipedia.org/wiki/Matka_Canyon", "https://showcaves.com/english/mk/showcaves/Vrelo.html"]
-  },
-  {
-    "name": "St. Andrew's Monastery (Matka)",
-    "description": "14th-century monastery tucked into Matka Canyon with frescoes — an atmospheric stop reachable by short boat ride/hike.",
-    "categories": ["Religion & Cultural Sites", "Historic Monasteries"],
-    "location": { "lat": 41.95270, "lon": 21.29810 },
-    "sources": ["https://en.wikipedia.org/wiki/St._Andrew%27s_Monastery_(Matka)"]
-  },
-  {
-    "name": "Church of St. Panteleimon (Gorno Nerezi)",
-    "description": "12th-century Byzantine church on the slopes of Vodno with exquisite medieval frescoes — a short drive/hike from the city.",
-    "categories": ["Religion & Cultural Sites", "Byzantine Art"],
-    "location": { "lat": 41.97700, "lon": 21.37400 },
-    "sources": ["https://en.wikipedia.org/wiki/Church_of_Saint_Panteleimon%2C_Gorno_Nerezi"]
-  },
-  {
-    "name": "Millennium Cross (Mount Vodno)",
-    "description": "66-metre steel cross on Vodno mountain with sweeping city views; the cable car (ropeway) is a visitor-friendly way to reach it.",
-    "categories": ["Landmarks & Viewpoints", "Experiences"],
-    "location": { "lat": 41.96529, "lon": 21.39462 },
-    "sources": ["https://en.wikipedia.org/wiki/Millennium_Cross", "https://skopjebus.mk/en/zhichnica/"]
-  },
-  {
-    "name": "Vodno Cable Car (Žičnica) — Sredno Vodno ↔ Millenium Cross",
-    "description": "Short cable-car ride offering panoramic views and fast access between Sredno Vodno and the Millennium Cross — pleasant experience, especially at sunset.",
-    "categories": ["Experiences", "Transport & Viewpoints"],
-    "location": { "lat": 41.96650, "lon": 21.39700 },
-    "sources": ["https://skopjebus.mk/en/zhichnica/", "https://onesmallbag.com/millennium-cross-skopje-mount-vodno-by-bus/"]
-  },
-  {
-    "name": "Skopje Zoo & City Park",
-    "description": "12-hectare zoo located next to the large City Park — family-friendly and a relaxed green stop inside the city.",
-    "categories": ["Parks & Zoos", "Family Activities"],
-    "location": { "lat": 42.00708, "lon": 21.41687 },
-    "sources": ["https://en.wikipedia.org/wiki/Skopje_Zoo"]
-  },
-  {
-    "name": "Macedonian Museum of Natural History",
-    "description": "Local natural history collections showing regional fauna, flora, geology and biodiversity — useful for quick indoor stops on rainy days.",
-    "categories": ["Museums", "Natural History"],
-    "location": { "lat": 42.00571, "lon": 21.41744 },
-    "sources": ["https://aroundus.com/p/164548505-macedonian-museum-of-natural-history"]
-  },
-  {
-    "name": "Bit Pazar (Open Market)",
-    "description": "Bustling open market area near the Old Bazaar selling produce, clothing and daily goods — lively spot to watch local life and try street food.",
-    "categories": ["Markets & Shopping", "Local Life"],
-    "location": { "lat": 42.00361, "lon": 21.43917 },
-    "sources": ["https://wikimapia.org/121724/Bit-Pazar"]
-  },
-  {
-    "name": "Museum of the Macedonian Struggle (Museum of VMRO)",
-    "description": "Modern museum dedicated to 19th–20th century political history and independence movements — strong modern-history content.",
-    "categories": ["Museums", "History & Politics"],
-    "location": { "lat": 41.99810, "lon": 21.43310 },
-    "sources": ["https://en.wikipedia.org/wiki/Museum_of_the_Macedonian_Struggle_%28Skopje%29"]
-  },
-  {
-    "name": "Museum of Contemporary Art (Skopje)",
-    "description": "National contemporary art collection (international & Macedonian artists) — housed in a modern building near the fortress area.",
-    "categories": ["Museums & Galleries", "Contemporary Art"],
-    "location": { "lat": 42.00401, "lon": 21.43292 },
-    "sources": ["https://msu.mk/home/"]
-  },
-  {
-    "name": "Kokino Megalithic Observatory (day trip)",
-    "description": "Bronze-Age megalithic observatory (UNESCO tentative) with carved rock markers used to track the sun and moon — archaeological day-trip northeast of Skopje.",
-    "categories": ["Archaeological Sites", "Day Trips"],
-    "location": { "lat": 42.26306, "lon": 21.95889 },
-    "sources": ["https://en.wikipedia.org/wiki/Kokino", "https://whc.unesco.org/en/tentativelists/5413/"]
-  },
-  {
-    "name": "Stobi Archaeological Site (day trip)",
-    "description": "Large ancient Roman/Byzantine city with mosaics and basilicas — south of Skopje, excellent if you want an archaeological full-day trip.",
-    "categories": ["Archaeological Sites", "Day Trips"],
-    "location": { "lat": 41.55320, "lon": 21.97579 },
-    "sources": ["https://en.wikipedia.org/wiki/Stobi"]
-  },
-  {
-    "name": "Tetovo — Painted (Šarena) Mosque & Arabati Baba Tekke (short trip)",
-    "description": "Tetovo's richly painted 'Šarena' (Painted) Mosque and the Bektashi Arabati Baba Tekke are excellent cultural stops ~40–50 km from Skopje (easy by car or bus).",
-    "categories": ["Religion & Cultural Sites", "Day Trips"],
-    "location": { "lat": 42.00619, "lon": 20.95968 },
-    "sources": ["https://en.wikipedia.org/wiki/%C5%A0arena_Mosque", "https://en.wikipedia.org/wiki/Arabati_Baba_Te%EF%B8%BD%EF%B8%BDe"]
-  },
-  {
-    "name": "Skopje City Park (Gradski Park)",
-    "description": "The largest green space in the city with walking paths, cafés, monuments and lakes — popular with locals for relaxation and evening strolls.",
-    "categories": ["Parks & Green Spaces", "City Life"],
-    "location": { "lat": 42.00550, "lon": 21.42030 },
-    "sources": ["https://en.wikipedia.org/wiki/City_Park,_Skopje"]
-  },
-  {
-    "name": "Macedonian Philharmonic Hall",
-    "description": "Modern concert hall hosting classical music performances and international guest orchestras — architectural and cultural highlight.",
-    "categories": ["Music & Performing Arts", "Modern Architecture"],
-    "location": { "lat": 41.99820, "lon": 21.43490 },
-    "sources": ["https://en.wikipedia.org/wiki/Macedonian_Philharmonic"]
-  },
-  {
-    "name": "National Opera and Ballet (MOB)",
-    "description": "Main venue for opera, ballet and classical performances in Skopje, known for its distinctive post-earthquake modernist architecture.",
-    "categories": ["Music & Performing Arts", "Cultural Institutions"],
-    "location": { "lat": 41.99885, "lon": 21.43670 },
-    "sources": ["https://en.wikipedia.org/wiki/Macedonian_Opera_and_Ballet"]
-  },
-  {
-    "name": "Daut Pasha Hammam (National Gallery)",
-    "description": "15th-century Ottoman bathhouse converted into an art gallery — atmospheric interior with domes and rotating exhibitions.",
-    "categories": ["Museums & Galleries", "Historic Buildings"],
-    "location": { "lat": 42.00165, "lon": 21.43630 },
-    "sources": ["https://en.wikipedia.org/wiki/Daut_Pasha_Hammam"]
-  },
-  {
-    "name": "Kapan Han",
-    "description": "Historic Ottoman caravanserai in the Old Bazaar that once hosted merchants and traders — today surrounded by cafés and galleries.",
-    "categories": ["Historic Buildings", "Cultural Sites"],
-    "location": { "lat": 42.00090, "lon": 21.43760 },
-    "sources": ["https://en.wikipedia.org/wiki/Kapan_Han"]
-  },
-  {
-    "name": "Suli An (Faculty of Fine Arts / Gallery)",
-    "description": "Former caravanserai now housing art studios and exhibitions — a quieter cultural corner of the Old Bazaar.",
-    "categories": ["Museums & Galleries", "Historic Buildings"],
-    "location": { "lat": 42.00040, "lon": 21.43820 },
-    "sources": ["https://en.wikipedia.org/wiki/Suli_An"]
-  },
-  {
-    "name": "Clock Tower (Saat Kula)",
-    "description": "Ottoman-era clock tower rising above the Old Bazaar area — historic urban landmark and orientation point.",
-    "categories": ["Monuments & Cultural Sites", "Architecture"],
-    "location": { "lat": 42.00220, "lon": 21.43880 },
-    "sources": ["https://en.wikipedia.org/wiki/Saat_Kula,_Skopje"]
-  },
-  {
-    "name": "Skopje Art Bridge",
-    "description": "Pedestrian bridge decorated with statues of notable Macedonian artists, connecting the Old Bazaar area with the modern city center.",
-    "categories": ["Public Art", "Architecture"],
-    "location": { "lat": 41.99810, "lon": 21.43530 },
-    "sources": ["https://en.wikipedia.org/wiki/Art_Bridge,_Skopje"]
-  },
-  {
-    "name": "Museum of Illusions Skopje",
-    "description": "Interactive museum featuring optical illusions and hands-on exhibits — fun, short visit suitable for families and casual tourists.",
-    "categories": ["Interactive Museums", "Family Activities"],
-    "location": { "lat": 41.99630, "lon": 21.43260 },
-    "sources": ["https://museumofillusions.mk/"]
-  },
-  {
-    "name": "Debar Maalo Neighborhood",
-    "description": "Lively central neighborhood known for restaurants, bars and cafés — best area to experience Skopje nightlife and modern local cuisine.",
-    "categories": ["Neighborhoods", "Food & Nightlife"],
-    "location": { "lat": 41.99870, "lon": 21.41750 },
-    "sources": ["https://en.wikipedia.org/wiki/Debar_Maalo"]
+    name: "Собор Святого Климента (Cathedral of St. Clement of Ohrid)",
+    description: "Large modern Orthodox cathedral dedicated to St. Clement of Ohrid — one of Skopje’s most important contemporary religious landmarks.",
+    categories: ["Religion"],
+    location: { lat: 41.99290, lon: 21.42550 },
+    sources: ["https://en.wikipedia.org/wiki/Cathedral_of_St._Clement_of_Ohrid"]
   }
-]
-      
-  
-  // 
+  // ⬅ keep ALL your existing places here unchanged
+];
 
-// Add markers to corresponding layer groups
+// POPUP BUILDER
+function popupContent(p) {
+  var links = (p.sources || []).map(s =>
+    `<a href="${s}" target="_blank">source</a>`
+  ).join(" • ");
+
+  return `<b>${p.name}</b><br>${p.description}<br>${links}`;
+}
+
+// ADD MARKERS
+var bounds = L.latLngBounds([]);
+
 places.forEach(function(p) {
-  p.categories.forEach(function(category) {
-    var catKey = (
-      category === "Sightseeing" ? "🏛 Sightseeing" :
-      category === "Monuments & Cultural Sites" ? "📜 Monuments & Cultural Sites" :
-      category === "Museums" ? "🖼 Museums" :
-      category === "Galleries" ? "🖼 Galleries" :
-      category === "Food & Nightlife" ? "🍽 Food & Nightlife" :
-      category === "Nature & Views" ? "🌿 Nature & Views" :
-      category === "Day Trips" ? "🚗 Day Trips" :
-      "🎲 Activities & Entertainment"
-    );
+  var marker = L.marker([p.location.lat, p.location.lon], {
+    icon: icons.sightseeing
+  }).bindPopup(popupContent(p));
 
-    var markerIcon = icons[category.toLowerCase()] || icons["sightseeing"];
-    
-    var marker = L.marker([p.location.lat, p.location.lon], {icon: markerIcon})
-      .bindPopup("<b>" + p.name + "</b><br/>" + p.description);
+  bounds.extend([p.location.lat, p.location.lon]);
 
-    if (layers[catKey]) {
-      layers[catKey].addLayer(marker);
+  p.categories.forEach(function(cat) {
+    var cfg = CATEGORY_MAP[cat];
+    if (!cfg) {
+      console.warn("Unknown category:", cat, "in", p.name);
+      return;
     }
+
+    marker.setIcon(icons[cfg.icon] || icons.sightseeing);
+    if (cfg.layer === "🚗 Day Trips") marker.setZIndexOffset(-1000);
+    layers[cfg.layer].addLayer(marker);
   });
 });
-// Add all layers to the map and a layer control
-Object.values(layers).forEach(function(l){ l.addTo(map); });
+
+// ADD LAYERS
+Object.values(layers).forEach(l => map.addLayer(l));
 L.control.layers(null, layers).addTo(map);
 
-// Geolocation
+// FIT VIEW
+if (bounds.isValid()) map.fitBounds(bounds.pad(0.1));
+
+// PERSIST LAYER VISIBILITY
+var saved = JSON.parse(localStorage.getItem("layers") || "[]");
+if (saved.length) {
+  Object.entries(layers).forEach(([k, l]) => {
+    if (!saved.includes(k)) map.removeLayer(l);
+  });
+}
+
+map.on('overlayadd overlayremove', function() {
+  var active = Object.keys(layers).filter(k => map.hasLayer(layers[k]));
+  localStorage.setItem("layers", JSON.stringify(active));
+});
+
+// GEOLOCATION
 var userMarker;
 function locateUser() {
-  if (!navigator.geolocation) { alert("Geolocation not supported by your browser."); return; }
+  if (!navigator.geolocation) return alert("Geolocation not supported.");
   navigator.geolocation.getCurrentPosition(function(pos) {
     var lat = pos.coords.latitude, lon = pos.coords.longitude;
     if (userMarker) map.removeLayer(userMarker);
-    userMarker = L.circleMarker([lat,lon], {radius:8, color:"#007bff", fillOpacity:0.8})
-      .addTo(map).bindPopup("You are here").openPopup();
+    userMarker = L.circleMarker([lat,lon], {
+      radius:8, color:"#007bff", fillOpacity:0.8
+    }).addTo(map).bindPopup("You are here").openPopup();
     map.setView([lat,lon],14);
-  }, function(err){
-    alert("Unable to retrieve location: " + err.message);
-  }, { enableHighAccuracy: true, timeout: 10000 });
+  }, err => alert(err.message), { enableHighAccuracy:true });
 }
 </script>
 </body>
