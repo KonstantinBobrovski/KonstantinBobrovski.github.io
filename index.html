@@ -1,154 +1,71 @@
-<!DOCTYPE html>
-<html>
-<head>
-<meta charset="utf-8" />
-<title>Skopje — Extended Map</title>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css">
-
-<style>
-body { margin:0; padding:0; font-family:Arial,sans-serif; }
-#map { height:100vh; width:100%; }
-.loc-button {
-  position:absolute; top:10px; right:10px;
-  padding:8px 10px; background:white;
-  border:1px solid #aaa; cursor:pointer; z-index:1000;
-}
-.legend-note {
-  position:absolute; left:10px; bottom:10px;
-  background:rgba(255,255,255,0.9);
-  padding:8px; border-radius:6px;
-  font-size:13px; z-index:1000;
-}
-</style>
-</head>
-
-<body>
-
-<div id="map"></div>
-<button class="loc-button" onclick="locateUser()">📍 My Location</button>
-<div class="legend-note">Markers grouped by category. Toggle layers top-right.</div>
-
-<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
-<script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
-
-<script>
-// MAP
-var map = L.map('map');
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom:19, attribution:'© OpenStreetMap'
-}).addTo(map);
-
-// ICONS
-function icon(color){
-  return L.icon({
-    iconUrl:`https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
-    shadowUrl:'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-    iconSize:[25,41], iconAnchor:[12,41]
-  });
-}
-
-var icons = {
-  sightseeing:icon("red"),
-  monuments:icon("orange"),
-  museum:icon("violet"),
-  gallery:icon("purple"),
-  food:icon("green"),
-  nature:icon("blue"),
-  daytrip:icon("yellow"),
-  activities:icon("grey")
-};
-
-// LAYERS
-var layers = {
-  "📜 Monuments & Cultural Sites":L.markerClusterGroup(),
-  "🖼 Museums":L.markerClusterGroup(),
-  "🖼 Galleries":L.markerClusterGroup(),
-  "🍽 Food & Nightlife":L.markerClusterGroup(),
-  "🌿 Nature & Views":L.markerClusterGroup(),
-  "🚗 Day Trips":L.markerClusterGroup(),
-  "🎲 Activities & Entertainment":L.markerClusterGroup()
-};
-
-// CATEGORY MAP
-var CATEGORY_MAP = {
-  "Monuments & Cultural Sites":{layer:"📜 Monuments & Cultural Sites",icon:"monuments"},
-  "Historic Buildings":{layer:"📜 Monuments & Cultural Sites",icon:"monuments"},
-  "Architecture":{layer:"📜 Monuments & Cultural Sites",icon:"monuments"},
-  "Religion":{layer:"📜 Monuments & Cultural Sites",icon:"monuments"},
-  "Religion & Cultural Sites":{layer:"📜 Monuments & Cultural Sites",icon:"monuments"},
-  "Museums":{layer:"🖼 Museums",icon:"museum"},
-  "Museums & Galleries":{layer:"🖼 Museums",icon:"museum"},
-  "Galleries":{layer:"🖼 Galleries",icon:"gallery"},
-  "Food & Nightlife":{layer:"🍽 Food & Nightlife",icon:"food"},
-  "Nature & Outdoors":{layer:"🌿 Nature & Views",icon:"nature"},
-  "Landmarks & Viewpoints":{layer:"🌿 Nature & Views",icon:"nature"},
-  "Day Trips":{layer:"🚗 Day Trips",icon:"daytrip"},
-  "Family Activities":{layer:"🎲 Activities & Entertainment",icon:"activities"},
-  "Interactive Museums":{layer:"🎲 Activities & Entertainment",icon:"activities"}
-};
-
-// PLACES (FULL LIST + Cathedral added)
-var places = [
-  {
-    name:"Собор Святого Климента (Cathedral of St. Clement of Ohrid)",
-    description:"Large modern Orthodox cathedral dedicated to St. Clement of Ohrid — one of Skopje’s most important religious landmarks.",
-    categories:["Religion"],
-    location:{lat:41.9929,lon:21.4255},
-    sources:["https://en.wikipedia.org/wiki/Cathedral_of_St._Clement_of_Ohrid"]
-  },
-  {
-    name:"Skopje Fortress (Kale)",
-    description:"Historic hilltop fortress with panoramic views over the city.",
-    categories:["Monuments & Cultural Sites"],
-    location:{lat:42.00097,lon:21.43225},
-    sources:["https://en.wikipedia.org/wiki/Skopje_Fortress"]
-  },
-  {
-    name:"Old Bazaar (Stara Čaršija)",
-    description:"Historic Ottoman bazaar district with narrow alleys, shops and cafés.",
-    categories:["Monuments & Cultural Sites"],
-    location:{lat:42.00076,lon:21.43696},
-    sources:["https://en.wikipedia.org/wiki/Old_Bazaar,_Skopje"]
-  },
-  {
-    name:"Stone Bridge (Kameni Most)",
-    description:"15th-century stone bridge connecting Macedonia Square to the Old Bazaar.",
-    categories:["Monuments & Cultural Sites"],
-    location:{lat:41.99699,lon:21.43307},
-    sources:["https://en.wikipedia.org/wiki/Stone_Bridge_(Skopje)"]
-  },
-  {
-    name:"Macedonia Square",
-    description:"Main central square of Skopje with statues and fountains.",
-    categories:["Monuments & Cultural Sites"],
-    location:{lat:41.9959,lon:21.43145},
-    sources:["https://en.wikipedia.org/wiki/Macedonia_Square,_Skopje"]
-  },
-  {
-    name:"Memorial House of Mother Teresa",
-    description:"Museum dedicated to Mother Teresa, who was born in Skopje.",
-    categories:["Museums"],
-    location:{lat:41.99389,lon:21.43083},
-    sources:["https://en.wikipedia.org/wiki/Memorial_House_of_Mother_Teresa"]
-  },
-  {
-    name:"Matka Canyon",
-    description:"Dramatic canyon west of Skopje with hiking, caves and boat trips.",
-    categories:["Nature & Outdoors","Day Trips"],
-    location:{lat:41.93016,lon:21.29227},
-    sources:["https://en.wikipedia.org/wiki/Matka_Canyon"]
-  },
-  {
-    name:"Millennium Cross (Mount Vodno)",
-    description:"66-metre steel cross with sweeping views over Skopje.",
-    categories:["Landmarks & Viewpoints"],
-    location:{lat:41.96529,lon:21.39462},
-    sources:["https://en.wikipedia.org/wiki/Millennium_Cross"]
-  },
+<!DOCTYPE html>  <html>  
+<head>  
+<meta charset="utf-8" />  
+<title>Tirana — Extended Map (Visit-Tirana descriptions)</title>  
+<meta name="viewport" content="width=device-width,initial-scale=1.0">  
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />  
+<style>  
+  body { margin:0; padding:0; font-family: Arial, sans-serif; }  
+  #map { height: 100vh; width: 100%; }  
+  .loc-button {  
+    position: absolute;  
+    top: 10px;  
+    right: 10px;  
+    padding: 8px 10px;  
+    background: white;  
+    border: 1px solid #aaa;  
+    cursor: pointer;  
+    z-index: 1000;  
+  }  
+  .legend-note { position: absolute; left: 10px; bottom: 10px; background: rgba(255,255,255,0.9); padding:8px; border-radius:6px; font-size:13px; z-index:1000; }  
+</style>  
+</head>  
+<body>  <div id="map"></div>  
+<button class="loc-button" onclick="locateUser()">📍 My Location</button>  
+<div class="legend-note">Markers colored by category. Toggle layers at top-right.</div>  <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>  <script>  
+var map = L.map('map').setView([42.00097, 21.43225], 13);  
   
+L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {  
+  maxZoom: 19,  
+  attribution: '© OpenStreetMap'  
+}).addTo(map);  
+  
+// Helper to load colored marker icons  
+function icon(color) {  
+  return L.icon({  
+    iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,  
+    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',  
+    iconSize: [25,41],  
+    iconAnchor: [12,41]  
+  });  
+}  
+  
+var icons = {  
+  sightseeing: icon("red"),  
+  monuments: icon("orange"),  
+  museum: icon("violet"),  
+  gallery: icon("purple"),  
+  food: icon("green"),  
+  nature: icon("blue"),  
+  daytrip: icon("yellow"),  
+  activities: icon("grey")  
+};  
+  
+// Create layer groups (toggleable)  
+var layers = {  
+  "🏛 Sightseeing": L.layerGroup(),  
+  "📜 Monuments & Cultural Sites": L.layerGroup(),  
+  "🖼 Museums": L.layerGroup(),  
+  "🖼 Galleries": L.layerGroup(),  
+  "🍽 Food & Nightlife": L.layerGroup(),  
+  "🌿 Nature & Views": L.layerGroup(),  
+  "🚗 Day Trips": L.layerGroup(),  
+  "🎲 Activities & Entertainment": L.layerGroup()  
+};  
+  
+// Places with short descriptions (sourced from Visit-Tirana where available)  
+var places = [  
   {  
     "name": "Skopje Fortress (Kale)",  
     "description": "Historic hilltop fortress with panoramic views over the old town and Vardar River — a good photo stop and short walk. Traces from Byzantine to Ottoman eras.",  
@@ -394,59 +311,52 @@ var places = [
     "location": { "lat": 41.99870, "lon": 21.41750 },  
     "sources": ["https://en.wikipedia.org/wiki/Debar_Maalo"]  
   }  
-]  ;
-
-// POPUPS
-function popupContent(p){
-  var links=(p.sources||[]).map(s=>`<a href="${s}" target="_blank">source</a>`).join(" • ");
-  return `<b>${p.name}</b><br>${p.description}<br>${links}`;
-}
-
-// MARKERS
-var bounds=L.latLngBounds([]);
-places.forEach(function(p){
-  var marker=L.marker([p.location.lat,p.location.lon],{icon:icons.sightseeing})
-    .bindPopup(popupContent(p));
-  bounds.extend([p.location.lat,p.location.lon]);
-
-  p.categories.forEach(function(cat){
-    var cfg=CATEGORY_MAP[cat];
-    if(!cfg)return;
-    marker.setIcon(icons[cfg.icon]||icons.sightseeing);
-    if(cfg.layer==="🚗 Day Trips") marker.setZIndexOffset(-1000);
-    layers[cfg.layer].addLayer(marker);
-  });
-});
-
-// ADD LAYERS
-Object.values(layers).forEach(l=>map.addLayer(l));
-L.control.layers(null,layers).addTo(map);
-if(bounds.isValid()) map.fitBounds(bounds.pad(0.1));
-
-// LAYER PERSISTENCE
-var saved=JSON.parse(localStorage.getItem("layers")||"[]");
-if(saved.length){
-  Object.entries(layers).forEach(([k,l])=>{
-    if(!saved.includes(k)) map.removeLayer(l);
-  });
-}
-map.on("overlayadd overlayremove",function(){
-  var active=Object.keys(layers).filter(k=>map.hasLayer(layers[k]));
-  localStorage.setItem("layers",JSON.stringify(active));
-});
-
-// GEOLOCATION
-var userMarker;
-function locateUser(){
-  if(!navigator.geolocation) return alert("Geolocation not supported.");
-  navigator.geolocation.getCurrentPosition(function(pos){
-    var lat=pos.coords.latitude,lon=pos.coords.longitude;
-    if(userMarker) map.removeLayer(userMarker);
-    userMarker=L.circleMarker([lat,lon],{radius:8,color:"#007bff",fillOpacity:0.8})
-      .addTo(map).bindPopup("You are here").openPopup();
-    map.setView([lat,lon],14);
-  });
-}
-</script>
-</body>
-</html>
+]  
+        
+    
+  //   
+  
+// Add markers to corresponding layer groups  
+places.forEach(function(p) {  
+  p.categories.forEach(function(category) {  
+    var catKey = (  
+      category === "Sightseeing" ? "🏛 Sightseeing" :  
+      category === "Monuments & Cultural Sites" ? "📜 Monuments & Cultural Sites" :  
+      category === "Museums" ? "🖼 Museums" :  
+      category === "Galleries" ? "🖼 Galleries" :  
+      category === "Food & Nightlife" ? "🍽 Food & Nightlife" :  
+      category === "Nature & Views" ? "🌿 Nature & Views" :  
+      category === "Day Trips" ? "🚗 Day Trips" :  
+      "🎲 Activities & Entertainment"  
+    );  
+  
+    var markerIcon = icons[category.toLowerCase()] || icons["sightseeing"];  
+      
+    var marker = L.marker([p.location.lat, p.location.lon], {icon: markerIcon})  
+      .bindPopup("<b>" + p.name + "</b><br/>" + p.description);  
+  
+    if (layers[catKey]) {  
+      layers[catKey].addLayer(marker);  
+    }  
+  });  
+});  
+// Add all layers to the map and a layer control  
+Object.values(layers).forEach(function(l){ l.addTo(map); });  
+L.control.layers(null, layers).addTo(map);  
+  
+// Geolocation  
+var userMarker;  
+function locateUser() {  
+  if (!navigator.geolocation) { alert("Geolocation not supported by your browser."); return; }  
+  navigator.geolocation.getCurrentPosition(function(pos) {  
+    var lat = pos.coords.latitude, lon = pos.coords.longitude;  
+    if (userMarker) map.removeLayer(userMarker);  
+    userMarker = L.circleMarker([lat,lon], {radius:8, color:"#007bff", fillOpacity:0.8})  
+      .addTo(map).bindPopup("You are here").openPopup();  
+    map.setView([lat,lon],14);  
+  }, function(err){  
+    alert("Unable to retrieve location: " + err.message);  
+  }, { enableHighAccuracy: true, timeout: 10000 });  
+}  
+</script>  </body>  
+</html>  
