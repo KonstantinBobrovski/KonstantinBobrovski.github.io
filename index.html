@@ -3,29 +3,29 @@
 <head>
 <meta charset="utf-8" />
 <title>Skopje — Extended Map</title>
-<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
-<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css" />
+<link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
+<link rel="stylesheet" href="https://unpkg.com/leaflet.markercluster/dist/MarkerCluster.css">
 
 <style>
   body { margin:0; padding:0; font-family: Arial, sans-serif; }
   #map { height: 100vh; width: 100%; }
   .loc-button {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    padding: 8px 10px;
-    background: white;
-    border: 1px solid #aaa;
-    cursor: pointer;
-    z-index: 1000;
+    position:absolute;
+    top:10px;
+    right:10px;
+    padding:8px 10px;
+    background:white;
+    border:1px solid #aaa;
+    cursor:pointer;
+    z-index:1000;
   }
   .legend-note {
-    position: absolute;
-    left: 10px;
-    bottom: 10px;
-    background: rgba(255,255,255,0.9);
+    position:absolute;
+    left:10px;
+    bottom:10px;
+    background:rgba(255,255,255,0.9);
     padding:8px;
     border-radius:6px;
     font-size:13px;
@@ -33,11 +33,12 @@
   }
 </style>
 </head>
+
 <body>
 
 <div id="map"></div>
 <button class="loc-button" onclick="locateUser()">📍 My Location</button>
-<div class="legend-note">Markers colored by category. Toggle layers top-right.</div>
+<div class="legend-note">Markers are grouped by category. Toggle layers top-right.</div>
 
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script src="https://unpkg.com/leaflet.markercluster/dist/leaflet.markercluster.js"></script>
@@ -47,17 +48,17 @@
 var map = L.map('map');
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  maxZoom: 19,
-  attribution: '© OpenStreetMap'
+  maxZoom:19,
+  attribution:'© OpenStreetMap'
 }).addTo(map);
 
 // ICONS
 function icon(color) {
   return L.icon({
-    iconUrl: `https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
-    shadowUrl: 'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
-    iconSize: [25,41],
-    iconAnchor: [12,41]
+    iconUrl:`https://raw.githubusercontent.com/pointhi/leaflet-color-markers/master/img/marker-icon-${color}.png`,
+    shadowUrl:'https://unpkg.com/leaflet@1.9.4/dist/images/marker-shadow.png',
+    iconSize:[25,41],
+    iconAnchor:[12,41]
   });
 }
 
@@ -84,47 +85,66 @@ var layers = {
   "🎲 Activities & Entertainment": L.markerClusterGroup()
 };
 
-// CATEGORY MAP (single source of truth)
+// CATEGORY MAP
 var CATEGORY_MAP = {
-  "Monuments & Cultural Sites": { layer: "📜 Monuments & Cultural Sites", icon: "monuments" },
-  "Historic Buildings": { layer: "📜 Monuments & Cultural Sites", icon: "monuments" },
-  "Architecture": { layer: "📜 Monuments & Cultural Sites", icon: "monuments" },
-  "Religion": { layer: "📜 Monuments & Cultural Sites", icon: "monuments" },
-  "Religion & Cultural Sites": { layer: "📜 Monuments & Cultural Sites", icon: "monuments" },
+  "Monuments & Cultural Sites": { layer:"📜 Monuments & Cultural Sites", icon:"monuments" },
+  "Historic Buildings": { layer:"📜 Monuments & Cultural Sites", icon:"monuments" },
+  "Architecture": { layer:"📜 Monuments & Cultural Sites", icon:"monuments" },
+  "Religion": { layer:"📜 Monuments & Cultural Sites", icon:"monuments" },
+  "Religion & Cultural Sites": { layer:"📜 Monuments & Cultural Sites", icon:"monuments" },
 
-  "Museums": { layer: "🖼 Museums", icon: "museum" },
-  "Museums & Galleries": { layer: "🖼 Museums", icon: "museum" },
-  "Galleries": { layer: "🖼 Galleries", icon: "gallery" },
+  "Museums": { layer:"🖼 Museums", icon:"museum" },
+  "Museums & Galleries": { layer:"🖼 Museums", icon:"museum" },
+  "Galleries": { layer:"🖼 Galleries", icon:"gallery" },
 
-  "Food & Nightlife": { layer: "🍽 Food & Nightlife", icon: "food" },
+  "Food & Nightlife": { layer:"🍽 Food & Nightlife", icon:"food" },
 
-  "Nature & Outdoors": { layer: "🌿 Nature & Views", icon: "nature" },
-  "Landmarks & Viewpoints": { layer: "🌿 Nature & Views", icon: "nature" },
+  "Nature & Outdoors": { layer:"🌿 Nature & Views", icon:"nature" },
+  "Landmarks & Viewpoints": { layer:"🌿 Nature & Views", icon:"nature" },
 
-  "Day Trips": { layer: "🚗 Day Trips", icon: "daytrip" },
+  "Day Trips": { layer:"🚗 Day Trips", icon:"daytrip" },
 
-  "Activities": { layer: "🎲 Activities & Entertainment", icon: "activities" },
-  "Family Activities": { layer: "🎲 Activities & Entertainment", icon: "activities" }
+  "Activities": { layer:"🎲 Activities & Entertainment", icon:"activities" },
+  "Family Activities": { layer:"🎲 Activities & Entertainment", icon:"activities" }
 };
 
-// DATA (trimmed here only for brevity — keep your full list)
+// DATA
 var places = [
   {
-    name: "Собор Святого Климента (Cathedral of St. Clement of Ohrid)",
-    description: "Large modern Orthodox cathedral dedicated to St. Clement of Ohrid — one of Skopje’s most important contemporary religious landmarks.",
-    categories: ["Religion"],
-    location: { lat: 41.99290, lon: 21.42550 },
-    sources: ["https://en.wikipedia.org/wiki/Cathedral_of_St._Clement_of_Ohrid"]
+    name:"Собор Святого Климента (Cathedral of St. Clement of Ohrid)",
+    description:"Large modern Orthodox cathedral dedicated to St. Clement of Ohrid — one of Skopje’s most important religious landmarks.",
+    categories:["Religion"],
+    location:{lat:41.9929, lon:21.4255},
+    sources:["https://en.wikipedia.org/wiki/Cathedral_of_St._Clement_of_Ohrid"]
+  },
+  {
+    name:"Skopje Fortress (Kale)",
+    description:"Historic hilltop fortress with panoramic city views.",
+    categories:["Monuments & Cultural Sites"],
+    location:{lat:42.00097, lon:21.43225},
+    sources:["https://en.wikipedia.org/wiki/Skopje_Fortress"]
+  },
+  {
+    name:"Old Bazaar (Stara Čaršija)",
+    description:"Historic Ottoman bazaar district with shops, mosques and cafés.",
+    categories:["Monuments & Cultural Sites"],
+    location:{lat:42.00076, lon:21.43696},
+    sources:["https://en.wikipedia.org/wiki/Old_Bazaar,_Skopje"]
+  },
+  {
+    name:"Matka Canyon",
+    description:"Dramatic canyon west of Skopje with hiking, boats and caves.",
+    categories:["Nature & Outdoors","Day Trips"],
+    location:{lat:41.93016, lon:21.29227},
+    sources:["https://en.wikipedia.org/wiki/Matka_Canyon"]
   }
-  // ⬅ keep ALL your existing places here unchanged
 ];
 
-// POPUP BUILDER
+// POPUPS
 function popupContent(p) {
   var links = (p.sources || []).map(s =>
     `<a href="${s}" target="_blank">source</a>`
   ).join(" • ");
-
   return `<b>${p.name}</b><br>${p.description}<br>${links}`;
 }
 
@@ -144,7 +164,6 @@ places.forEach(function(p) {
       console.warn("Unknown category:", cat, "in", p.name);
       return;
     }
-
     marker.setIcon(icons[cfg.icon] || icons.sightseeing);
     if (cfg.layer === "🚗 Day Trips") marker.setZIndexOffset(-1000);
     layers[cfg.layer].addLayer(marker);
@@ -155,18 +174,18 @@ places.forEach(function(p) {
 Object.values(layers).forEach(l => map.addLayer(l));
 L.control.layers(null, layers).addTo(map);
 
-// FIT VIEW
+// FIT MAP
 if (bounds.isValid()) map.fitBounds(bounds.pad(0.1));
 
-// PERSIST LAYER VISIBILITY
+// PERSIST LAYERS
 var saved = JSON.parse(localStorage.getItem("layers") || "[]");
 if (saved.length) {
-  Object.entries(layers).forEach(([k, l]) => {
+  Object.entries(layers).forEach(([k,l]) => {
     if (!saved.includes(k)) map.removeLayer(l);
   });
 }
 
-map.on('overlayadd overlayremove', function() {
+map.on("overlayadd overlayremove", function() {
   var active = Object.keys(layers).filter(k => map.hasLayer(layers[k]));
   localStorage.setItem("layers", JSON.stringify(active));
 });
@@ -182,7 +201,7 @@ function locateUser() {
       radius:8, color:"#007bff", fillOpacity:0.8
     }).addTo(map).bindPopup("You are here").openPopup();
     map.setView([lat,lon],14);
-  }, err => alert(err.message), { enableHighAccuracy:true });
+  }, err => alert(err.message), {enableHighAccuracy:true});
 }
 </script>
 </body>
